@@ -1,5 +1,5 @@
 # DLL Hot Reloader
-Simple in use cross platform shader lybrary hot realoder
+Simple in use cross platform shared lybrary hot realoder
 
 ## API
 In your application
@@ -30,9 +30,9 @@ DHR_EXPORT void DHR_CALL Draw(ImGuiContext* context, ImVec4* clear_color)
 }
 ```
 ## How to use
-To use hot reload it necessary to disable pdb files in visual studio **Hit CTR + F5** (Reason is pdb can't be modifyed on runtime)
+To use hot reload it necessary to disable pdb files in visual studio **Hit CTR+F5** (The reason is pdb can't be modifyed in runtime)
 
-To debug include your shared library ```target_link_libraries(YourProject YourDLL)``` and use pdb **Hit F5** 
+To debug include your shared library ```target_link_libraries(YourProject YourDLL)``` and use pdb **Hit F5**
 
 ## Example
 [Source code](https://github.com/alex2835/learn_dll)
