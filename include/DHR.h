@@ -57,7 +57,7 @@ struct DLLHotReloader
         CheckForUpdate();
     }
 
-    ~DLLHotReloader()
+    inline ~DLLHotReloader()
     {
         delete mLibrary;
     }
