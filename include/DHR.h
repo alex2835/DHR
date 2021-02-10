@@ -57,7 +57,7 @@ struct DLLHotReloader
         CheckForUpdate();
     }
 
-    ~DLLHotReloader()
+    inline ~DLLHotReloader()
     {
         delete mLibrary;
     }
@@ -65,7 +65,7 @@ struct DLLHotReloader
     /*
     *  @throw If dll can't be reloaded
     */
-    inline void CheckForUpdate()
+    inline bool CheckForUpdate()
     {
         fs::file_time_type lib_update_time = mLastUpdateTime;
         try
@@ -87,7 +87,9 @@ struct DLLHotReloader
             
             mLastUpdateTime = lib_update_time;
             mFunctionCache.clear();
+            return true;
         }
+        return false;
     }
 
     /*
