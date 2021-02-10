@@ -73,7 +73,7 @@ struct DLLHotReloader
         fs::file_time_type lib_update_time = mLastUpdateTime;
         try
         {
-            lib_update_time = fs::last_write_time(dynalo::to_native_name("../ui/UI").c_str());
+            lib_update_time = fs::last_write_time(mInputPath);
         }
         catch (const std::exception& e)
         {}
