@@ -7,15 +7,21 @@
 #include "dynalo/symbol_helper.hpp"
 #else
 
+#ifndef DHR_DLL_COPIES_DIR
+#define DHR_DLL_COPIES_DIR "./DllCopies/"
+#endif
+#ifndef DHR_RELOAD_DELEY
+#define DHR_RELOAD_DELEY 100ms
+#endif
+
 #include "dynalo/dynalo.hpp"
 #include <unordered_map>
 #include <type_traits>
 #include <filesystem>
 #include <thread>
-
 namespace fs = std::filesystem;
 using namespace std::chrono_literals;
-static const char* CACHED_DLL_DIR = "./HotReloadedDLL/";
+
 
 struct DLLHotReloader
 {
@@ -24,8 +30,8 @@ struct DLLHotReloader
     std::string mOutputPath;
     fs::file_time_type mLastUpdateTime;
 
-    typedef void (*FunctionPointer)(void);
-    mutable std::unordered_map<std::string, FunctionPointer> mFunctionCache;
+    typedef void (*DefFunctionPointer)(void);
+    mutable std::unordered_map<std::string, DefFunctionPointer> mFunctionCache;
 
     /*
     *  Name without extension
@@ -35,9 +41,9 @@ struct DLLHotReloader
         : mLibrary(nullptr)
     {
         // Directory where dll copies are stored
-        if (!std::filesystem::exists(CACHED_DLL_DIR))
+        if (!std::filesystem::exists(DHR_DLL_COPIES_DIR))
         {
-            fs::create_directory(CACHED_DLL_DIR);
+            fs::create_directory(DHR_DLL_COPIES_DIR);
         }
 
         std::string name;
@@ -53,7 +59,7 @@ struct DLLHotReloader
         }
 
         mInputPath  = input_dir + name;
-        mOutputPath = CACHED_DLL_DIR + name;
+        mOutputPath = DHR_DLL_COPIES_DIR + name;
         CheckForUpdate();
     }
 
@@ -77,7 +83,7 @@ struct DLLHotReloader
 
         if (mLastUpdateTime != lib_update_time || mLibrary == nullptr)
         {
-            std::this_thread::sleep_for(1ms);
+            std::this_thread::sleep_for(DHR_RELOAD_DELEY);
 
             delete mLibrary;
             mLibrary = nullptr;
@@ -105,7 +111,7 @@ struct DLLHotReloader
         }
         else {
             auto func = mLibrary->get_function<FunctionSignature>(name);
-            mFunctionCache[name] = reinterpret_cast<FunctionPointer>(func);
+            mFunctionCache[name] = reinterpret_cast<DefFunctionPointer>(func);
             return func(args...);
         }
     }
